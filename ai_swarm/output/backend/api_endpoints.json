@@ -1,0 +1,226 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/transactions",
+    "description": "Get all transactions for the authenticated user, with filtering and pagination.",
+    "request_payload": "query_params: {start_date: Date, end_date: Date, category_ids: Array<UUID>, merchant_names: Array<String>, min_amount: Decimal, max_amount: Decimal, has_receipt: Boolean, currency: String, page: Integer, limit: Integer}",
+    "response_payload": "Array<TransactionObject>"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/transactions/{transaction_id}",
+    "description": "Get a specific transaction by ID.",
+    "request_payload": "path_param: {transaction_id: UUID}",
+    "response_payload": "TransactionObject"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/transactions",
+    "description": "Add a new manual transaction.",
+    "request_payload": "body: {description: String, amount: Decimal, currency: String, transaction_date: Date, category_id: UUID (optional), tags: Array<String> (optional), account_id: UUID (optional)}",
+    "response_payload": "TransactionObject"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/transactions/{transaction_id}",
+    "description": "Update details of an existing transaction (e.g., category, tags, description).",
+    "request_payload": "path_param: {transaction_id: UUID}, body: {category_id: UUID (optional), tags: Array<String> (optional), description: String (optional), merchant_name: String (optional), amount: Decimal (optional), transaction_date: Date (optional)}",
+    "response_payload": "TransactionObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/transactions/{transaction_id}",
+    "description": "Delete a manual transaction.",
+    "request_payload": "path_param: {transaction_id: UUID}",
+    "response_payload": "{\"message\": \"Transaction deleted successfully\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/categories",
+    "description": "Get all categories (global and user-defined).",
+    "request_payload": "query_params: {type: String (optional), is_custom: Boolean (optional)}",
+    "response_payload": "Array<CategoryObject>"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/categories",
+    "description": "Create a new custom category.",
+    "request_payload": "body: {name: String, icon: String (optional), parent_category_id: UUID (optional)}",
+    "response_payload": "CategoryObject"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/categories/{category_id}",
+    "description": "Update an existing custom category.",
+    "request_payload": "path_param: {category_id: UUID}, body: {name: String (optional), icon: String (optional), parent_category_id: UUID (optional)}",
+    "response_payload": "CategoryObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/categories/{category_id}",
+    "description": "Delete a custom category.",
+    "request_payload": "path_param: {category_id: UUID}",
+    "response_payload": "{\"message\": \"Category deleted successfully\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/categorization-rules",
+    "description": "Get all custom categorization rules for the authenticated user.",
+    "request_payload": "None",
+    "response_payload": "Array<CustomCategorizationRuleObject>"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/categorization-rules",
+    "description": "Create a new custom categorization rule.",
+    "request_payload": "body: {rule_name: String, condition_type: String, condition_value: String, target_category_id: UUID, priority: Integer, is_active: Boolean}",
+    "response_payload": "CustomCategorizationRuleObject"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/categorization-rules/{rule_id}",
+    "description": "Update an existing custom categorization rule.",
+    "request_payload": "path_param: {rule_id: UUID}, body: {rule_name: String (optional), condition_type: String (optional), condition_value: String (optional), target_category_id: UUID (optional), priority: Integer (optional), is_active: Boolean (optional)}",
+    "response_payload": "CustomCategorizationRuleObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/categorization-rules/{rule_id}",
+    "description": "Delete a custom categorization rule.",
+    "request_payload": "path_param: {rule_id: UUID}",
+    "response_payload": "{\"message\": \"Rule deleted successfully\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/categorization-rules/apply-all",
+    "description": "Trigger re-categorization for all un-categorized or recently updated transactions based on rules.",
+    "request_payload": "None",
+    "response_payload": "{\"message\": \"Recategorization initiated\", \"job_id\": \"UUID\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/transactions/{transaction_id}/receipts",
+    "description": "Upload a receipt image for a specific transaction.",
+    "request_payload": "path_param: {transaction_id: UUID}, multipart_form_data: {image_file: File}",
+    "response_payload": "ReceiptObject"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/transactions/{transaction_id}/receipts",
+    "description": "Get receipt details for a transaction.",
+    "request_payload": "path_param: {transaction_id: UUID}",
+    "response_payload": "ReceiptObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/receipts/{receipt_id}",
+    "description": "Delete a receipt.",
+    "request_payload": "path_param: {receipt_id: UUID}",
+    "response_payload": "{\"message\": \"Receipt deleted successfully\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/budgets",
+    "description": "Get all budgets for the authenticated user, optionally filtered by status.",
+    "request_payload": "query_params: {status: \"active\" | \"past\" (optional)}",
+    "response_payload": "Array<BudgetObject>"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/budgets/{budget_id}",
+    "description": "Get details and progress for a specific budget.",
+    "request_payload": "path_param: {budget_id: UUID}",
+    "response_payload": "BudgetDetailObject (includes spent_amount, remaining_amount, projected_overspend)"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/budgets",
+    "description": "Create a new spending budget.",
+    "request_payload": "body: {name: String, budget_amount: Decimal, currency: String, start_date: Date, end_date: Date, frequency: String, rollover_overspend: Boolean, rollover_underspend: Boolean, alert_threshold_percentage: Integer, budget_items: Array<{category_id: UUID (optional), tag: String (optional)}>}",
+    "response_payload": "BudgetObject"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/budgets/{budget_id}",
+    "description": "Update an existing budget.",
+    "request_payload": "path_param: {budget_id: UUID}, body: {name: String (optional), budget_amount: Decimal (optional), currency: String (optional), start_date: Date (optional), end_date: Date (optional), frequency: String (optional), rollover_overspend: Boolean (optional), rollover_underspend: Boolean (optional), alert_threshold_percentage: Integer (optional), budget_items: Array<{category_id: UUID (optional), tag: String (optional)}> (optional)}",
+    "response_payload": "BudgetObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/budgets/{budget_id}",
+    "description": "Delete a budget.",
+    "request_payload": "path_param: {budget_id: UUID}",
+    "response_payload": "{\"message\": \"Budget deleted successfully\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recurring-payments",
+    "description": "Get all recurring payments for the authenticated user.",
+    "request_payload": "query_params: {status: \"active\" | \"cancelled\" (optional)}",
+    "response_payload": "Array<RecurringPaymentObject>"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recurring-payments",
+    "description": "Add a new manual recurring payment.",
+    "request_payload": "body: {name: String, amount: Decimal, currency: String, frequency: String, next_due_date: Date, is_subscription: Boolean (optional)}",
+    "response_payload": "RecurringPaymentObject"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/recurring-payments/{payment_id}",
+    "description": "Update details or status of a recurring payment.",
+    "request_payload": "path_param: {payment_id: UUID}, body: {status: String (optional), next_due_date: Date (optional), name: String (optional), amount: Decimal (optional), frequency: String (optional), is_subscription: Boolean (optional)}",
+    "response_payload": "RecurringPaymentObject"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/recurring-payments/{payment_id}",
+    "description": "Delete a recurring payment.",
+    "request_payload": "path_param: {payment_id: UUID}",
+    "response_payload": "{\"message\": \"Recurring payment deleted successfully\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/insights/spending-summary",
+    "description": "Get current month's spending summary.",
+    "request_payload": "query_params: {currency: String (optional)}",
+    "response_payload": "{\"total_spent\": \"Decimal\", \"total_income\": \"Decimal\", \"net_change\": \"Decimal\", \"currency\": \"String\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/insights/spending-trends",
+    "description": "Get spending trends by category, merchant, or tag over a specified period.",
+    "request_payload": "query_params: {start_date: Date, end_date: Date, interval: \"day\" | \"week\" | \"month\", group_by: \"category\" | \"merchant\" | \"tag\", currency: String (optional)}",
+    "response_payload": "Array<{date: Date, group_name: String, amount: Decimal}>"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/insights/dashboard-summary",
+    "description": "Get aggregated data for the Insights Dashboard.",
+    "request_payload": "query_params: {currency: String (optional)}",
+    "response_payload": "{\"spending_summary\": \"Object\", \"budget_progress\": \"Array<BudgetSummaryObject>\", \"upcoming_recurring_payments\": \"Array<RecurringPaymentSummaryObject>\", \"actionable_insights\": \"Array<InsightMessageObject>\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/reports",
+    "description": "Initiate generation of a new financial report.",
+    "request_payload": "body: {report_name: String, report_type: String, start_date: Date, end_date: Date, categories_included: Array<UUID> (optional), merchants_included: Array<String> (optional), include_receipts: Boolean, export_format: String}",
+    "response_payload": "{\"message\": \"Report generation initiated\", \"report_id\": \"UUID\", \"status\": \"pending\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reports",
+    "description": "Get a list of previously generated reports.",
+    "request_payload": "None",
+    "response_payload": "Array<ReportObject>"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reports/{report_id}/download",
+    "description": "Download a generated report file.",
+    "request_payload": "path_param: {report_id: UUID}",
+    "response_payload": "File (CSV/PDF)"
+  }
+]

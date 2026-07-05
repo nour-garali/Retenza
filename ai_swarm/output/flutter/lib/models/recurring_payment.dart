@@ -1,0 +1,1 @@
+class RecurringPayment {  final String id;  final String name;  final double amount;  final String frequency;  final DateTime nextDueDate;  RecurringPayment({    required this.id,    required this.name,    required this.amount,    required this.frequency,    required this.nextDueDate,  });}

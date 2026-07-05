@@ -1,0 +1,214 @@
+[
+  {
+    "model_name": "Users",
+    "fields": {
+      "id": "UUID",
+      "auth_id": "UUID",
+      "email": "String",
+      "first_name": "String",
+      "last_name": "String",
+      "currency_preference": "String",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "One-to-Many with Accounts",
+      "One-to-Many with Transactions",
+      "One-to-Many with Categories",
+      "One-to-Many with CustomCategorizationRules",
+      "One-to-Many with Budgets",
+      "One-to-Many with RecurringPayments",
+      "One-to-Many with Receipts",
+      "One-to-Many with Reports"
+    ]
+  },
+  {
+    "model_name": "Accounts",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "account_name": "String",
+      "provider": "String",
+      "external_account_id": "String",
+      "account_type": "String",
+      "currency": "String",
+      "is_active": "Boolean",
+      "last_synced_at": "DateTime",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "One-to-Many with Transactions"
+    ]
+  },
+  {
+    "model_name": "Transactions",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "account_id": "UUID (nullable)",
+      "external_transaction_id": "String (nullable)",
+      "description": "String",
+      "merchant_name": "String",
+      "amount": "Decimal",
+      "currency": "String",
+      "transaction_date": "Date",
+      "posting_date": "Date (nullable)",
+      "category_id": "UUID (nullable)",
+      "original_category_name": "String (nullable)",
+      "tags": "Array of Strings",
+      "is_recurring": "Boolean",
+      "recurring_payment_id": "UUID (nullable)",
+      "status": "String",
+      "is_manual": "Boolean",
+      "receipt_id": "UUID (nullable)",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "Many-to-One with Accounts",
+      "Many-to-One with Categories",
+      "Many-to-One with RecurringPayments",
+      "Many-to-One with Receipts"
+    ]
+  },
+  {
+    "model_name": "Categories",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID (nullable for global categories)",
+      "name": "String",
+      "icon": "String",
+      "type": "String",
+      "is_custom": "Boolean",
+      "parent_category_id": "UUID (nullable)",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users (optional)",
+      "One-to-Many with Transactions",
+      "One-to-Many with Budgets (via BudgetItems)",
+      "One-to-Many with CustomCategorizationRules",
+      "Self-referencing for parent/child categories"
+    ]
+  },
+  {
+    "model_name": "CustomCategorizationRules",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "rule_name": "String",
+      "condition_type": "String",
+      "condition_value": "String",
+      "target_category_id": "UUID",
+      "priority": "Integer",
+      "is_active": "Boolean",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "Many-to-One with Categories"
+    ]
+  },
+  {
+    "model_name": "Receipts",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "transaction_id": "UUID",
+      "image_url": "String",
+      "ocr_text_content": "Text",
+      "extracted_merchant_name": "String (nullable)",
+      "extracted_amount": "Decimal (nullable)",
+      "extracted_date": "Date (nullable)",
+      "uploaded_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "Many-to-One with Transactions"
+    ]
+  },
+  {
+    "model_name": "Budgets",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "name": "String",
+      "budget_amount": "Decimal",
+      "currency": "String",
+      "start_date": "Date",
+      "end_date": "Date",
+      "frequency": "String",
+      "rollover_overspend": "Boolean",
+      "rollover_underspend": "Boolean",
+      "alert_threshold_percentage": "Integer",
+      "is_active": "Boolean",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "One-to-Many with BudgetItems"
+    ]
+  },
+  {
+    "model_name": "BudgetItems",
+    "fields": {
+      "id": "UUID",
+      "budget_id": "UUID",
+      "category_id": "UUID (nullable)",
+      "tag": "String (nullable)"
+    },
+    "relationships": [
+      "Many-to-One with Budgets",
+      "Many-to-One with Categories (optional)"
+    ]
+  },
+  {
+    "model_name": "RecurringPayments",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "name": "String",
+      "amount": "Decimal",
+      "currency": "String",
+      "frequency": "String",
+      "next_due_date": "Date",
+      "last_paid_date": "Date (nullable)",
+      "is_subscription": "Boolean",
+      "status": "String",
+      "detection_method": "String",
+      "created_at": "DateTime",
+      "updated_at": "DateTime"
+    },
+    "relationships": [
+      "Many-to-One with Users",
+      "One-to-Many with Transactions"
+    ]
+  },
+  {
+    "model_name": "Reports",
+    "fields": {
+      "id": "UUID",
+      "user_id": "UUID",
+      "report_name": "String",
+      "report_type": "String",
+      "start_date": "Date",
+      "end_date": "Date",
+      "categories_included": "Array of UUIDs",
+      "merchants_included": "Array of Strings",
+      "include_receipts": "Boolean",
+      "export_format": "String",
+      "file_url": "String",
+      "generated_at": "DateTime",
+      "status": "String"
+    },
+    "relationships": [
+      "Many-to-One with Users"
+    ]
+  }
+]

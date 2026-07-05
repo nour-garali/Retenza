@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment variables
+.env
+.env.*
+
+# Flutter
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/pubspec.lock
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.user
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
