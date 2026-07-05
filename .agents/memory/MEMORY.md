@@ -1,0 +1,1 @@
+- [Retenza backend MongoDB setup](retenza-mongodb.md) — dev uses in-memory Mongo fallback; production needs a real MONGODB_URI secret set before deploying.

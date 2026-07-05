@@ -1,12 +1,22 @@
 const mongoose = require('mongoose');
 
 let dbConnected = false;
+let memoryServer = null;
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+  let uri = process.env.MONGODB_URI;
 
   if (!uri) {
-    throw new Error('MONGODB_URI is not defined in environment variables');
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+
+    // No external MongoDB configured for local/dev environment:
+    // spin up an in-memory MongoDB instance so the app can run out of the box.
+    console.warn('⚠️  MONGODB_URI not set - starting an in-memory MongoDB instance for development.');
+    const { MongoMemoryServer } = require('mongodb-memory-server');
+    memoryServer = await MongoMemoryServer.create();
+    uri = memoryServer.getUri();
   }
 
   try {
