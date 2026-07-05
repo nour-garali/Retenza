@@ -1,1 +1,2 @@
 - [Retenza backend MongoDB setup](retenza-mongodb.md) — dev uses in-memory Mongo fallback; production needs a real MONGODB_URI secret set before deploying.
+- [Retenza Flutter brand & swarm design system](retenza-flutter-design.md) — real app uses inline brand tokens, not ai_swarm/output; that output is from an unrelated past feature, don't reuse its palette blindly.
